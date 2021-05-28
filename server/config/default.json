@@ -1,0 +1,4 @@
+{
+    "MONGO_URL": "mongodb+srv://postcard:postcard74123@cluster0.iwpck.mongodb.net/chatRoom-v1?retryWrites=true&w=majority",
+    "jwtSecretCode": "CR_JwtSecret"
+}
