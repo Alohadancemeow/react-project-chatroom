@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Provider } from 'react-redux'
+import store from './redux/store'
 import "./App.scss";
 import { Login, Register, SideBox } from './components/login/index'
+import { loadUser } from './redux/actions/authAction'
 
 
 function App() {
@@ -38,31 +41,37 @@ function App() {
   }
 
   useEffect(() => {
+    store.dispatch(loadUser())
+
     sideBox.classList.add("right");
   }, [])
 
 
   return (
-    <div className="App">
-      <div className="login">
-        <div className="container" ref={containerRef}>
-          {
-            isLoginActive
-              ? <Login containerRef={(ref) => containerRef.current = ref} />
-              : <Register containerRef={(ref) => containerRef.current = ref} />
-          }
+    <Provider store={store}>
+
+      <div className="App">
+        <div className="login">
+          <div className="container" ref={containerRef}>
+            {
+              isLoginActive
+                ? <Login containerRef={(ref) => containerRef.current = ref} />
+                : <Register containerRef={(ref) => containerRef.current = ref} />
+            }
+
+          </div>
+
+          <SideBox
+            current={current}
+            currentActive={currentActive}
+            containerRef={(ref) => sideBox = ref}
+            onClick={handleChange}
+          />
 
         </div>
-
-        <SideBox
-          current={current}
-          currentActive={currentActive}
-          containerRef={(ref) => sideBox = ref}
-          onClick={handleChange}
-        />
-
       </div>
-    </div>
+
+    </Provider>
   );
 }
 

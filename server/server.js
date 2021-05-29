@@ -1,10 +1,12 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const config = require('config')
+const cors = require('cors')
 
 const userRoute = require('./routes/user')
 
 const app = express()
+app.use(cors())
 
 // Express v4.16.0 and higher
 app.use(express.json())
