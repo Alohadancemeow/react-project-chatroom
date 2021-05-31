@@ -1,9 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import store from './redux/store'
 import "./App.scss";
 import { Login, Register, SideBox } from './components/login/index'
 import { loadUser } from './redux/actions/authAction'
+
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 
 function App() {
@@ -47,31 +54,82 @@ function App() {
   }, [])
 
 
+  // # Snackbar section
+
+  const { id, msg, status } = useSelector(state => state.error)
+  // const { isAuthenticated, user } = useSelector(state => state.auth)
+
+  const [snackbar, setSnackbar] = useState({
+    open: true,
+    vertical: 'top',
+    horizontal: 'center'
+  });
+
+
+  const { vertical, horizontal, open } = snackbar
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbar({
+      ...snackbar,
+      open: false
+    });
+  };
+
+ 
+    const isAuth = (
+      <Snackbar
+        key={vertical + horizontal}
+        open={open}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical, horizontal }}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity="error"
+        >
+          {msg.message}
+
+        </Alert>
+      </Snackbar>
+    )
+
+
+
   return (
-    <Provider store={store}>
-
-      <div className="App">
-        <div className="login">
-          <div className="container" ref={containerRef}>
-            {
-              isLoginActive
-                ? <Login containerRef={(ref) => containerRef.current = ref} />
-                : <Register containerRef={(ref) => containerRef.current = ref} />
-            }
-
-          </div>
-
-          <SideBox
-            current={current}
-            currentActive={currentActive}
-            containerRef={(ref) => sideBox = ref}
-            onClick={handleChange}
-          />
+    <div className="App">
+      <div className="login">
+        <div className="container" ref={containerRef}>
+          {
+            isLoginActive
+              ? <Login containerRef={(ref) => containerRef.current = ref} />
+              : <Register containerRef={(ref) => containerRef.current = ref} />
+          }
 
         </div>
+
+        <SideBox
+          current={current}
+          currentActive={currentActive}
+          containerRef={(ref) => sideBox = ref}
+          onClick={handleChange}
+        />
+
       </div>
 
-    </Provider>
+      {/* //todo: Snackbar */}
+      {
+        msg.message
+          ? isAuth
+          : null
+      }
+
+
+    </div>
   );
 }
 

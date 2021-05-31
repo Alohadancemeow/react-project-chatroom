@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { signin } from '../../redux/actions/authAction'
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 
 export const Login = (props) => {
 
@@ -15,8 +22,10 @@ export const Login = (props) => {
     const [user, setUser] = useState({
         email: '',
         password: '',
-        errMessage: null
+        errMessage: null,
+        successMessage: 'login successfully'
     })
+
 
     // # Select Reducers
     const error = useSelector(state => state.error)
@@ -68,7 +77,37 @@ export const Login = (props) => {
         // Send to login
         dispatch(signin(signedUpUser))
 
+        // Show snackbar
+        handleClick()
     }
+
+
+    // # Snackbar section
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center'
+    });
+
+    const { vertical, horizontal, open } = snackbar
+
+    const handleClick = () => {
+        setSnackbar({
+            ...snackbar,
+            open: true
+        });
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setSnackbar({
+            ...snackbar,
+            open: false
+        });
+    };
 
 
 
@@ -116,7 +155,40 @@ export const Login = (props) => {
                     Login
                 </button>
             </div>
-        </div>
+
+            {/* //todo: Snackbar */}
+            <Snackbar
+                key={vertical + horizontal}
+                open={open}
+                autoHideDuration={6000}
+                anchorOrigin={{ vertical, horizontal }}
+                onClose={handleClose}
+            >
+                {
+                    user.errMessage
+                        ? (
+                            <Alert
+                                onClose={handleClose}
+                                severity="error"
+                            >
+                                {user.errMessage}
+
+                            </Alert>
+                        )
+                        : (
+                            <Alert
+                                onClose={handleClose}
+                                severity="success"
+                            >
+                                {user.successMessage}
+
+                            </Alert>
+                        )
+                }
+
+            </Snackbar>
+
+        </div >
     )
 }
 

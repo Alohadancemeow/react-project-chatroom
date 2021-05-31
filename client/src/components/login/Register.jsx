@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { register } from '../../redux/actions/authAction'
-import { clearErrors } from '../../redux/actions/errorAction'
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export const Register = (props) => {
 
@@ -17,7 +22,8 @@ export const Register = (props) => {
         name: '',
         email: '',
         password: '',
-        errMessage: null
+        errMessage: null,
+        successMessage: 'register successfully'
     })
 
     // # Select Reducers
@@ -71,7 +77,39 @@ export const Register = (props) => {
         // Send to register
         dispatch(register(newUser))
 
+        // Show snackbar
+        handleClick()
+
     }
+
+
+    // # Snackbar section
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center'
+    });
+
+    const { vertical, horizontal, open } = snackbar
+
+    const handleClick = () => {
+        setSnackbar({
+            ...snackbar,
+            open: true
+        });
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setSnackbar({
+            ...snackbar,
+            open: false
+        });
+    };
+
 
 
     return (
@@ -128,6 +166,39 @@ export const Register = (props) => {
                     Register
                 </button>
             </div>
+
+            {/* //todo: Snackbar */}
+            <Snackbar
+                key={vertical + horizontal}
+                open={open}
+                autoHideDuration={6000}
+                anchorOrigin={{ vertical, horizontal }}
+                onClose={handleClose}
+            >
+                {
+                    user.errMessage
+                        ? (
+                            <Alert
+                                onClose={handleClose}
+                                severity="error"
+                            >
+                                {user.errMessage}
+
+                            </Alert>
+                        )
+                        : (
+                            <Alert
+                                onClose={handleClose}
+                                severity="success"
+                            >
+                                {user.successMessage}
+
+                            </Alert>
+                        )
+                }
+
+            </Snackbar>
+
         </div>
     )
 }
