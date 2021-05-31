@@ -34,7 +34,7 @@ export const loadUser = () => async (dispatch, getState) => {
                 err.response.data,
                 err.response.status
             ))
-            
+
             dispatch({
                 type: AUTH_ERROR
             })
@@ -56,15 +56,20 @@ export const register = ({ name, email, password }) => async (dispatch) => {
 
     // Call api -> server
     await axios.post(`${API_URL}/register`, body, config)
-        .then((res) => dispatch({
-            type: REGISTER_SUCCESS,
-            payload: res.data // token, user
-        }))
+        .then((res) => {
+            dispatch({
+                type: REGISTER_SUCCESS,
+                payload: res.data // token, user
+            })
+
+            // After register success, clear error
+            dispatch(clearErrors())
+        })
         .catch((err) => {
             dispatch(returnErrors(
                 err.response.data,
                 err.response.status,
-                "REGISTER_FAIL"
+                REGISTER_FAIL
             ))
 
             dispatch({
@@ -75,12 +80,50 @@ export const register = ({ name, email, password }) => async (dispatch) => {
 }
 
 // # Sign in user
-export const signin = ({ email, password }) => (dispatch) => {
+export const signin = ({ email, password }) => async (dispatch) => {
+
+    // Set headers
+    const config = {
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }
+
+    // Request body
+    const body = JSON.stringify({ email, password })
+
+    // Call api
+    await axios.post(`${API_URL}/signin`, body, config)
+        .then((res) => {
+            dispatch({
+                type: LOGIN_SUCCESS,
+                payload: res.data
+            })
+
+            // After login success, clear error
+            dispatch(clearErrors())
+        })
+        .catch((err) => {
+            dispatch(returnErrors(
+                err.response.data, // msg
+                err.response.status, // status
+                LOGIN_FAIL // id
+            ))
+
+            // send to reducer to change state
+            dispatch({
+                type: LOGIN_FAIL
+            })
+        })
 
 }
 
 // # Sign out user
 export const signout = () => (dispatch) => {
+
+    // No need to call api,
+    // Just remove 'token' from localStorage.
+    dispatch({ type: LOGOUT_SUCCESS })
 
 }
 

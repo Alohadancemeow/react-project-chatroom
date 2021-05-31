@@ -27,6 +27,7 @@ export const Register = (props) => {
     // console.log(auth);
 
 
+    // # Register error effect
     useEffect(() => {
 
         // Check for register error
