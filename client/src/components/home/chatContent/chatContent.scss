@@ -1,0 +1,153 @@
+.main-chatcontent {
+  flex-grow: 1;
+  padding: 20px 40px;
+  max-width: 63%;
+  border-right: 1px solid #ebe7fb;
+
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
+  justify-content: flex-start;
+
+  .content-header {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ebe7fb;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .currunt-chatting {
+      display: flex;
+      align-items: center;     
+
+      p {
+        margin: 0;
+        font-weight: bolder;
+      }
+    }
+
+    .settings {
+      //   .btn-nobg {
+      //     color: #000;
+      //   }
+
+      button {
+        width: 36px;
+        height: 36px;
+        background-color: #fff;
+        border: none;
+        box-shadow: none;
+        outline: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #000;
+        padding: 0;
+        border-radius: 5px;
+        line-height: 36px;
+        transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
+
+        &:hover {
+          transform: scale(1.2);
+        }
+
+        i {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .center-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+
+    .content-body {
+      max-height: calc(100vh - calc(100vh / 2));
+      overflow: auto;
+
+      .chat-items {
+        .chat-item {
+          display: flex;
+          justify-content: flex-end;
+          align-items: flex-end;
+          margin-bottom: 15px;
+          transition: all 0.3s ease;
+          transform: scale(0);
+          transform-origin: right;
+          animation-name: showIn;
+          animation-duration: 0.2s; /* or: Xms */
+          animation-iteration-count: 1;
+          animation-direction: normal; /* or: normal */
+          animation-timing-function: cubic-bezier(
+            0.88,
+            0.19,
+            0.37,
+            1.11
+          ); /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
+          animation-fill-mode: both; /* or: backwards, both, none */
+          animation-delay: 0.2s; /* or: Xms */
+        }
+        @keyframes showIn {
+          0% {
+            transform: scale(0);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+      }
+    }
+
+    .content-footer {
+      padding-top: 30px;
+
+      .send-message {
+        background-color: #fff;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-radius: 8px;
+
+        button {
+          width: 36px;
+          height: 36px;
+          background-color: #ecefff;
+          border: none;
+          box-shadow: none;
+          outline: none;
+          cursor: pointer;
+          font-size: 16px;
+          color: #4665ff;
+          padding: 0;
+          border-radius: 5px;
+          line-height: 36px;
+          transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
+
+          &:hover {
+            transform: scale(1.2);
+          }
+
+          i {
+            display: block;
+          }
+        }
+
+        input {
+          flex-grow: 1;
+          padding: 0 15px;
+          background-color: transparent;
+          border: none;
+          outline: none;
+        }
+
+        #send-btn {
+          background-color: #3b5bfe;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
