@@ -7,14 +7,14 @@
 }
 
 .chat-messages {
-  padding: 10px;
-  //   max-height: 200px;
-  height: 100%;
-  overflow-y: scroll;
+  // padding: 10px;
+    // max-height: fit-content;
+  // height: 100%;
+  // overflow-y: scroll;
 
   .message {
-    padding: 5px 20px;
-    margin-bottom: 15px;
+    padding: 5px 10px;
+    margin: 0 10px 15px 0;
     // background-color: var(--light-color);
     background-color: #fff;
     border-radius: 5px;
@@ -28,6 +28,7 @@
       margin: 5px;
 
       span {
+        margin-left: 10px;
         color: #777;
       }
     }

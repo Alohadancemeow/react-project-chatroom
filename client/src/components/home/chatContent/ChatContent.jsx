@@ -1,39 +1,92 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import './chatContent.scss'
-import ChatItem from './ChatItem'
+import { io } from "socket.io-client";
 
-import { outputMessage, emitMessage } from '../socket'
+import ChatItem from './ChatItem'
 
 const ChatContent = () => {
 
-    const txt = outputMessage()
-    console.log(txt);
+    // # Socket.io v.3 or higher
+    const socket = io(
+        'http://localhost:5000',
+        { withCredentials: true }
+    )
 
-    // # State
-    const [message, setMessage] = useState('')
+    // # Select authReducer
+    const { user } = useSelector(state => state.auth)
+    const username = user.name
+
+    // # States
+    const [state, setState] = useState({
+        username: '',
+        message: ''
+    })
+
+    const [chatMessage, setChatMessage] = useState([])
+    // console.log(chatMessage);
+
 
     // # Handle OnChange
     const handleOnChange = (e) => {
-        const text = e.target.value
-        // [e.target.name] = e.target.value
-        console.log(text);
 
-        setMessage(text)
+        // Get text from input
+        const message = e.target.value
+
+        setState({
+            ...state,
+            username,
+            message,
+        })
     }
+
+    console.log(chatMessage);
 
     // # Send Message
     const sendMessage = (e) => {
         e.preventDefault()
 
-        console.log(message);
+        const { username, message } = state
 
-        // send message to server
-        emitMessage(message)
+        // Emit to server
+        socket.emit('chatMessage', { username, message })
 
-        // clear state
-        setMessage('')
+        // Clear fotm input
+        setState({
+            ...state,
+            message: ''
+        })
 
     }
+
+    useEffect(() => {
+
+        // Receive message from server
+        socket.on('chatMessage', ({ username, message }) => {
+            setChatMessage(oldMessage => [
+                ...oldMessage,
+                { username, message }
+            ])
+        })
+
+    }, [])
+
+    // # Render chatMessage
+    // const renderChatMessage = () => {
+    //     return (
+    //         chatMessage.map(({ username, message }, index) => (
+    //             <div key={index} class="chat-messages">
+    //                 <div className="message">
+    //                     <p className="meta">
+    //                         {username}
+    //                         <span>9:12pm</span>
+    //                     </p>
+    //                     <p className="text">{message}</p>
+    //                 </div>
+    //             </div>
+    //         ))
+    //     )
+    // }
 
 
     return (
@@ -61,8 +114,20 @@ const ChatContent = () => {
                 {/* //todo: body */}
                 <div className="content-body">
                     <div className="chat-items">
+
                         {/* //todo: map chat items here */}
-                        <ChatItem />
+                        {/* {renderChatMessage()} */}
+
+                        {
+                            chatMessage.map(({ username, message }, index) => (
+                                <ChatItem
+                                    index={index}
+                                    username={username}
+                                    message={message}
+                                />
+                            ))
+                        }
+
 
                     </div>
                 </div>
@@ -76,7 +141,7 @@ const ChatContent = () => {
                         <input
                             type="text"
                             name="message"
-                            value={message}
+                            value={state.message}
                             placeholder="Type a message here"
                             onChange={handleOnChange}
                         />

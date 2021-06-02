@@ -12,7 +12,13 @@ const app = express()
 app.use(cors())
 
 const server = http.createServer(app)
-const io = socketio(server)
+const io = socketio(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+})
 
 
 
@@ -47,8 +53,8 @@ io.on('connection', (socket) => {
     })
 
     // Listen for chatMessage
-    socket.on('chatMessage', (message) => {
-        io.emit('message', message)
+    socket.on('chatMessage', ({ username, message }) => {
+        io.emit('chatMessage', { username, message })
     })
 })
 
