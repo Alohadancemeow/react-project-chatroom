@@ -6,6 +6,8 @@ import ChatContent from '../chatContent/ChatContent'
 import UserProfile from '../userProfile/UserProfile'
 
 const ChatBody = () => {
+
+    
     return (
         <div className="main-chatbody">
             <ChatList />

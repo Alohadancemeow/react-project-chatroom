@@ -3,10 +3,18 @@ const mongoose = require('mongoose')
 const config = require('config')
 const cors = require('cors')
 
+const http = require('http')
+const socketio = require('socket.io')
+
 const userRoute = require('./routes/user')
 
 const app = express()
 app.use(cors())
+
+const server = http.createServer(app)
+const io = socketio(server)
+
+
 
 // Express v4.16.0 and higher
 app.use(express.json())
@@ -22,11 +30,32 @@ app.get('/api', (req, res) => res.send('Wellcome to api'))
 app.use('/api/users', userRoute)
 
 
+// # Socket.io
+// When client connects
+io.on('connection', (socket) => {
+    console.log('socket.io connected...');
+
+    // Wellcome current user
+    socket.emit('message', 'Wellcome to ChatRoom')
+
+    // Broadcast when user connects
+    socket.broadcast.emit('message', 'A user has joined the chat')
+
+    // Runs when client disconnects
+    socket.on('disconnect', () => {
+        io.emit('message', 'A user left the chat')
+    })
+
+    // Listen for chatMessage
+    socket.on('chatMessage', (message) => {
+        io.emit('message', message)
+    })
+})
 
 
 // # Set port 
 const port = process.env.PORT || 5000
-app.listen(port, () => console.log(`Server started on port ${port}`))
+server.listen(port, () => console.log(`Server started on port ${port}`))
 
 
 // # MongoDB Setup.
