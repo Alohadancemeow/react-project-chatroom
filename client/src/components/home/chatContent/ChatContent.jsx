@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import './chatContent.scss'
 import { io } from "socket.io-client";
+import ReactScrollableFeed from 'react-scrollable-feed'
 
 import ChatItem from './ChatItem'
 
@@ -19,12 +20,17 @@ const ChatContent = () => {
 
     // # States
     const [state, setState] = useState({
-        username: '',
+        username: username,
         message: ''
     })
 
+    // # State for socket messages
+    const [wellcomeMessage, setWellcomeMessage] = useState([])
+    console.log(wellcomeMessage);
+    const [joinMessage, setJoinMessage] = useState([])
     const [chatMessage, setChatMessage] = useState([])
-    // console.log(chatMessage);
+    console.log(chatMessage);
+    const [leaveMessage, setLeaveMessage] = useState([])
 
 
     // # Handle OnChange
@@ -40,16 +46,22 @@ const ChatContent = () => {
         })
     }
 
-    console.log(chatMessage);
+    // console.log(chatMessage);
 
     // # Send Message
-    const sendMessage = (e) => {
+    const emitMessage = (e) => {
         e.preventDefault()
 
         const { username, message } = state
 
         // Emit to server
-        socket.emit('chatMessage', { username, message })
+        if (message) {
+
+            socket.emit('chatMessage', {
+                username,
+                message,
+            })
+        }
 
         // Clear fotm input
         setState({
@@ -61,32 +73,28 @@ const ChatContent = () => {
 
     useEffect(() => {
 
-        // Receive message from server
-        socket.on('chatMessage', ({ username, message }) => {
-            setChatMessage(oldMessage => [
-                ...oldMessage,
-                { username, message }
+        // emit user
+        socket.emit('users', username)
+
+        // Receive joinMessage from server with moment time
+        socket.on('wellcomeMessage', ({ username, message, time }) => {
+            setWellcomeMessage([
+                ...wellcomeMessage,
+                { username, message, time }
             ])
         })
 
+        // Receive chatMessage from server with moment time
+        socket.on('chatMessage', ({ username, message, time }) => {
+            setChatMessage(oldMessage => [
+                ...oldMessage,
+                { username, message, time }
+            ])
+        })
+
+
     }, [])
 
-    // # Render chatMessage
-    // const renderChatMessage = () => {
-    //     return (
-    //         chatMessage.map(({ username, message }, index) => (
-    //             <div key={index} class="chat-messages">
-    //                 <div className="message">
-    //                     <p className="meta">
-    //                         {username}
-    //                         <span>9:12pm</span>
-    //                     </p>
-    //                     <p className="text">{message}</p>
-    //                 </div>
-    //             </div>
-    //         ))
-    //     )
-    // }
 
 
     return (
@@ -96,8 +104,7 @@ const ChatContent = () => {
             <div className="content-header">
                 <div className="blocks">
                     <div className="current-chatting">
-                        {/* <p>Room name</p> */}
-                        <h2>Room name</h2>
+                        <h2>We need to talk</h2>
                     </div>
                 </div>
                 <div className="blocks">
@@ -115,19 +122,18 @@ const ChatContent = () => {
                 <div className="content-body">
                     <div className="chat-items">
 
-                        {/* //todo: map chat items here */}
-                        {/* {renderChatMessage()} */}
-
-                        {
-                            chatMessage.map(({ username, message }, index) => (
-                                <ChatItem
-                                    index={index}
-                                    username={username}
-                                    message={message}
-                                />
-                            ))
-                        }
-
+                        <ReactScrollableFeed >
+                            { //todo: map chat items here
+                                chatMessage.map(({ username, message, time }, index) => (
+                                    <ChatItem
+                                        index={index}
+                                        username={username}
+                                        message={message}
+                                        time={time}
+                                    />
+                                ))
+                            }
+                        </ReactScrollableFeed>
 
                     </div>
                 </div>
@@ -148,7 +154,7 @@ const ChatContent = () => {
                         <button
                             className="send-btn"
                             id="send-btn"
-                            onClick={sendMessage}
+                            onClick={emitMessage}
                         >
                             <i className="fa fa-paper-plane"></i>
                         </button>

@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const config = require('config')
 const cors = require('cors')
+const { formatTime, formatMoment } = require('./utils/moment')
 
 const http = require('http')
 const socketio = require('socket.io')
@@ -36,25 +37,40 @@ app.get('/api', (req, res) => res.send('Wellcome to api'))
 app.use('/api/users', userRoute)
 
 
+
 // # Socket.io
+
+const botName = '3rd rabbit Bot'
+const users = []
+
 // When client connects
 io.on('connection', (socket) => {
     console.log('socket.io connected...');
 
+    // user count
+    socket.on('users', (username) => {
+        const { name, momentTime } = formatMoment(username)
+        users.push(oldUser => [
+            ...oldUser,
+            { name, momentTime }
+        ])
+        io.emit('users', ({ name, momentTime }))
+    })
+
     // Wellcome current user
-    socket.emit('message', 'Wellcome to ChatRoom')
+    socket.emit('wellcomeMessage', formatTime(botName, 'Wellcome to ChatRoom'))
 
     // Broadcast when user connects
-    socket.broadcast.emit('message', 'A user has joined the chat')
+    socket.broadcast.emit('message', formatTime(botName, 'A user has joined the chat'))
 
     // Runs when client disconnects
     socket.on('disconnect', () => {
-        io.emit('message', 'A user left the chat')
+        io.emit('message', formatTime(botName, 'A user left the chat'))
     })
 
     // Listen for chatMessage
     socket.on('chatMessage', ({ username, message }) => {
-        io.emit('chatMessage', { username, message })
+        io.emit('chatMessage', formatTime(username, message))
     })
 })
 

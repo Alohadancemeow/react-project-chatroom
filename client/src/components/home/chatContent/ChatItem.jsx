@@ -3,17 +3,17 @@ import './chatItem.scss'
 
 const ChatItem = (props) => {
 
-    const { index, username, message } = props
-    console.log(index, username, message);
+    const { index, username, message, time } = props
+    console.log(index, username, message, time);
 
     return (
-        <div key={index} class="chat-messages">
+        <div key={index} class="chat-messages" id="chat-messsage">
             <div  className="message">
                 <p className="meta">
                     {username}
-                    <span>9:12pm</span>
+                    <span>{time}</span>
                 </p>
-                <p className="text">{message}</p>
+                <p className="text">{`Say: ${message}`}</p>
             </div>
         </div>
     )
