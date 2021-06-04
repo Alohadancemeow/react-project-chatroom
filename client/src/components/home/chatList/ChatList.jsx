@@ -11,29 +11,37 @@ const ChatList = () => {
 
     const dispatch = useDispatch()
 
+
     // # Socket.io v.3 or higher
     const socket = io(
         'http://localhost:5000',
         { withCredentials: true }
     )
 
-    const [user, setUser] = useState([])
+    const [activeUsers, setActiveUsers] = useState([])
+
 
     useEffect(() => {
 
-        socket.on('users', ({ name, momentTime }) => {
-            setUser([
-                ...user,
-                { name, momentTime }
-            ])
+        socket.on('users', (users) => {
+            if (users) {
+                users.map(({ name, momentTime }) => (
+                    setActiveUsers([
+                        ...activeUsers,
+                        { name, momentTime }
+                    ])
+                ))
+            }
         })
     }, [])
 
-    console.log(user);
+    console.log(activeUsers);
 
 
     // # Handle leave btn
     const handleLeave = () => {
+
+        // Logout from app
         dispatch(signout())
     }
 
@@ -58,7 +66,7 @@ const ChatList = () => {
             <div className="userlist">
 
                 { //todo: map joined users
-                    user.map(({ name, momentTime }, index) => (
+                    activeUsers.map(({ name, momentTime }, index) => (
                         <UserList
                             index={index}
                             username={name}

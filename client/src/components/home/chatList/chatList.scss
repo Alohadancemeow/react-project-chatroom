@@ -60,6 +60,7 @@
     // align-items: center;
     padding: 10px 10px 0;
     margin-top: 5px;
+    color: #516874;
 
     .btn-nobg {
       background-color: transparent;
@@ -76,31 +77,31 @@
     }
   }
 
-  .chatlist-search {
-    .search-wrap {
-      background-color: #e6e5ea;
-      border-radius: 5px;
+  // .chatlist-search {
+  //   .search-wrap {
+  //     background-color: #e6e5ea;
+  //     border-radius: 5px;
 
-      input {
-        background-color: transparent;
-        border: none;
-        padding: 15px 15px;
-        outline: none;
-        width: 80%;
-        padding-right: 0;
-      }
+  //     input {
+  //       background-color: transparent;
+  //       border: none;
+  //       padding: 15px 15px;
+  //       outline: none;
+  //       width: 80%;
+  //       padding-right: 0;
+  //     }
 
-      .search-btn {
-        height: 46px;
-        border: none;
-        background-color: transparent;
-        outline: none;
-        // width: 20%;
-        cursor: pointer;
-        font-size: 20px;
-      }
-    }
-  }
+  //     .search-btn {
+  //       height: 46px;
+  //       border: none;
+  //       background-color: transparent;
+  //       outline: none;
+  //       // width: 20%;
+  //       cursor: pointer;
+  //       font-size: 20px;
+  //     }
+  //   }
+  // }
 
   .userlist {
     width: 100%;
@@ -150,9 +151,14 @@
           font-size: 18px;
           font-weight: bold;
 
-          color: rgb(8, 8, 8);
-          opacity: 0.7;
-          margin: 5px 5px;
+          background-color: #05f710;;
+          width: -moz-fit-content;
+          width: fit-content;
+          padding: 2px 8px;
+          border-radius: 3px;
+          color: #fff;
+          // opacity: 0.7;
+          margin: 8px 5px 3px;
         }
         .text {
           font-size: 15px;

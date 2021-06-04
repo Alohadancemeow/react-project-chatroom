@@ -1,6 +1,6 @@
 .main-chatcontent {
   flex-grow: 1;
-  padding: 20px 40px;
+  padding: 20px 20px;
   max-width: 63%;
   border-right: 1px solid #ebe7fb;
 
@@ -10,20 +10,22 @@
   justify-content: flex-start;
 
   .content-header {
-    padding-bottom: 15px;
+    // padding-bottom: 15px;
+    margin-bottom: 10px;
     border-bottom: 1px solid #ebe7fb;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
+    align-self: center;
 
-    .currunt-chatting {
-      display: flex;
+    .current-chatting {
+      // display: flex;
       align-items: center;
-
-      p {
-        margin: 0;
-        font-weight: bolder;
+      
+      h3 {
+        margin: 5px 0 15px;
+        color: #607d8b;
       }
     }
 
@@ -109,8 +111,8 @@
     }
 
     .content-footer {
-      padding-top: 30px;
-      margin-top: 10px;
+      padding-top: 20px;
+      // margin-top: 10px;
 
       .send-message {
         background-color: #fff;

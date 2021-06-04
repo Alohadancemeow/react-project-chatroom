@@ -47,26 +47,40 @@ const users = []
 io.on('connection', (socket) => {
     console.log('socket.io connected...');
 
+    const id = socket.id
+
+    // Wellcome current user
+    socket.emit('notifyMessage', formatTime(botName, 'Wellcome to ChatRoom'))
+
     // user count
     socket.on('users', (username) => {
         const { name, momentTime } = formatMoment(username)
-        users.push(oldUser => [
-            ...oldUser,
-            { name, momentTime }
-        ])
-        io.emit('users', ({ name, momentTime }))
+
+        users.push({ id, name, momentTime })
+        console.log(users);
+        // users.map(({ name, momentTime }) => console.log(name, momentTime))
+
+        io.emit('users', (users))
+
+        // Broadcast when user connects
+        socket.broadcast.emit('notifyMessage', formatTime(botName, `${username} has joined the chat`))
+
+        // Runs when client disconnects
+        socket.on('disconnect', () => {
+
+            console.log('disconnected');
+
+            io.emit('notifyMessage',
+                formatTime(botName, `${username} left the chat`)
+            )
+            // console.log(formatTime(botName, `${username} left the chat`));
+
+            const allUsers = users.filter(user => user.id !== id)
+            console.log(allUsers);
+            io.emit('users', (allUsers))
+        })
     })
 
-    // Wellcome current user
-    socket.emit('wellcomeMessage', formatTime(botName, 'Wellcome to ChatRoom'))
-
-    // Broadcast when user connects
-    socket.broadcast.emit('message', formatTime(botName, 'A user has joined the chat'))
-
-    // Runs when client disconnects
-    socket.on('disconnect', () => {
-        io.emit('message', formatTime(botName, 'A user left the chat'))
-    })
 
     // Listen for chatMessage
     socket.on('chatMessage', ({ username, message }) => {

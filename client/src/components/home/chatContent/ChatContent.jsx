@@ -25,12 +25,8 @@ const ChatContent = () => {
     })
 
     // # State for socket messages
-    const [wellcomeMessage, setWellcomeMessage] = useState([])
-    console.log(wellcomeMessage);
-    const [joinMessage, setJoinMessage] = useState([])
     const [chatMessage, setChatMessage] = useState([])
     console.log(chatMessage);
-    const [leaveMessage, setLeaveMessage] = useState([])
 
 
     // # Handle OnChange
@@ -76,13 +72,8 @@ const ChatContent = () => {
         // emit user
         socket.emit('users', username)
 
-        // Receive joinMessage from server with moment time
-        socket.on('wellcomeMessage', ({ username, message, time }) => {
-            setWellcomeMessage([
-                ...wellcomeMessage,
-                { username, message, time }
-            ])
-        })
+        // Join chatroom
+        // socket.emit('joinRoom', { username });
 
         // Receive chatMessage from server with moment time
         socket.on('chatMessage', ({ username, message, time }) => {
@@ -102,18 +93,18 @@ const ChatContent = () => {
 
             {/* //todo: header */}
             <div className="content-header">
-                <div className="blocks">
-                    <div className="current-chatting">
-                        <h2>We need to talk</h2>
-                    </div>
+
+                <div className="current-chatting">
+                    <h3>WE NEED TO TALK</h3>
+
                 </div>
-                <div className="blocks">
-                    <div className="settings">
-                        <button className="btn-nobg">
-                            <i className="fa fa-cog"></i>
-                        </button>
-                    </div>
-                </div>
+
+                {/* <div className="settings">
+                    <button className="btn-nobg">
+                        <i className="fa fa-cog"></i>
+                    </button>
+
+                </div> */}
             </div>
 
             <div className="center-box">
