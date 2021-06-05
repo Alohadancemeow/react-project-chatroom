@@ -49,11 +49,14 @@ io.on('connection', (socket) => {
 
     const id = socket.id
 
+    // Emit user id
+    socket.emit('id', (id))
+
     // Wellcome current user
     socket.emit('notifyMessage', formatTime(botName, 'Wellcome to ChatRoom'))
 
     // user count
-    socket.on('users', (username) => {
+    socket.on('users', ({ username }) => {
         const { name, momentTime } = formatMoment(username)
 
         users.push({ id, name, momentTime })
@@ -83,8 +86,8 @@ io.on('connection', (socket) => {
 
 
     // Listen for chatMessage
-    socket.on('chatMessage', ({ username, message }) => {
-        io.emit('chatMessage', formatTime(username, message))
+    socket.on('chatMessage', ({ username, body, type, mimeType, fileName }) => {
+        io.emit('chatMessage', (formatTime(username, {body, type, mimeType, fileName})))
     })
 })
 

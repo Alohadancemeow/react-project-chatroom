@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import ReactScrollableFeed from 'react-scrollable-feed'
 
 import ChatItem from './ChatItem'
+import ImageItem from './ImageItem';
 
 const ChatContent = () => {
 
@@ -21,8 +22,14 @@ const ChatContent = () => {
     // # States
     const [state, setState] = useState({
         username: username,
-        message: ''
+        message: '',
+        fileName: ''
     })
+
+    const [userId, setUserId] = useState()
+    // console.log(userId);
+
+    const [file, setFile] = useState()
 
     // # State for socket messages
     const [chatMessage, setChatMessage] = useState([])
@@ -42,7 +49,20 @@ const ChatContent = () => {
         })
     }
 
-    // console.log(chatMessage);
+    // # Selected file
+    const selectedFile = (e) => {
+
+        // Get selected image file
+        const imageFile = e.target.files[0]
+        setFile(imageFile)
+        console.log(imageFile);
+
+        setState({
+            ...state,
+            fileName: imageFile.name
+        })
+    }
+
 
     // # Send Message
     const emitMessage = (e) => {
@@ -50,42 +70,104 @@ const ChatContent = () => {
 
         const { username, message } = state
 
-        // Emit to server
-        if (message) {
 
-            socket.emit('chatMessage', {
+        if (file) {
+            const messageObject = {
                 username,
-                message,
+                type: "file",
+                body: file,
+                mimeType: file.type,
+                fileName: file.name
+            }
+
+            setFile()
+
+            socket.emit('chatMessage', messageObject)
+
+            // Clear fotm input
+            setState({
+                ...state,
+                message: '',
+                fileName: ''
             })
         }
 
-        // Clear fotm input
-        setState({
-            ...state,
-            message: ''
-        })
+        // If message, Emit to server
+        if (message) {
 
+            const messageObject = {
+                username,
+                type: 'text',
+                body: message
+            }
+
+            socket.emit('chatMessage', messageObject)
+
+            // Clear fotm input
+            setState({
+                ...state,
+                message: '',
+                fileName: ''
+            })
+        }
     }
 
     useEffect(() => {
 
-        // emit user
-        socket.emit('users', username)
+        // Get socket id
+        socket.on('id', (id) => {
+            setUserId(id)
+        })
 
-        // Join chatroom
-        // socket.emit('joinRoom', { username });
+        // emit user
+        socket.emit('users', { username })
 
         // Receive chatMessage from server with moment time
         socket.on('chatMessage', ({ username, message, time }) => {
+            const { type, body, mimeType, fileName } = message
             setChatMessage(oldMessage => [
                 ...oldMessage,
-                { username, message, time }
+                { username, type, body, mimeType, fileName, time }
             ])
         })
 
-
     }, [])
 
+
+    // # Render message items
+    const renderMessageItems = () => {
+
+        return chatMessage.map((messageItem, index) => {
+
+            // render image
+            if (messageItem.type === 'file') {
+
+                const blob = new Blob([messageItem.body], { type: messageItem.type })
+
+                return (
+                    <ImageItem
+                        index={index}
+                        username={messageItem.username}
+                        fileName={messageItem.fileName}
+                        time={messageItem.time}
+                        blob={blob}
+                    />
+                )
+            }
+
+            // reder message
+            return (
+                <ChatItem
+                    index={index}
+                    username={messageItem.username}
+                    message={messageItem.body}
+                    time={messageItem.time}
+                />
+            )
+
+        })
+
+    }
 
 
     return (
@@ -99,12 +181,6 @@ const ChatContent = () => {
 
                 </div>
 
-                {/* <div className="settings">
-                    <button className="btn-nobg">
-                        <i className="fa fa-cog"></i>
-                    </button>
-
-                </div> */}
             </div>
 
             <div className="center-box">
@@ -115,14 +191,7 @@ const ChatContent = () => {
 
                         <ReactScrollableFeed >
                             { //todo: map chat items here
-                                chatMessage.map(({ username, message, time }, index) => (
-                                    <ChatItem
-                                        index={index}
-                                        username={username}
-                                        message={message}
-                                        time={time}
-                                    />
-                                ))
+                                renderMessageItems()
                             }
                         </ReactScrollableFeed>
 
@@ -132,13 +201,22 @@ const ChatContent = () => {
                 {/* //todo: footer */}
                 <div className="content-footer">
                     <div className="send-message">
+
                         <button className="add-file">
-                            <i className="fa fa-plus"></i>
+                            <label htmlFor="file">
+                                <i className="fa fa-plus"></i>
+                            </label>
+                            <input
+                                id="file"
+                                type="file"
+                                accept="image/*"
+                                onChange={selectedFile}
+                            />
                         </button>
                         <input
                             type="text"
                             name="message"
-                            value={state.message}
+                            value={state.fileName ? state.fileName : state.message}
                             placeholder="Type a message here"
                             onChange={handleOnChange}
                         />

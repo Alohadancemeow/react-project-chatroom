@@ -22,7 +22,7 @@
     .current-chatting {
       // display: flex;
       align-items: center;
-      
+
       h3 {
         margin: 5px 0 15px;
         color: #607d8b;
@@ -142,6 +142,10 @@
 
           i {
             display: block;
+          }
+
+          input[type="file"] {
+            display: none;
           }
         }
 
