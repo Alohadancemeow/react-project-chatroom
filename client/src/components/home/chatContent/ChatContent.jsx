@@ -178,7 +178,6 @@ const ChatContent = () => {
 
                 <div className="current-chatting">
                     <h3>WE NEED TO TALK</h3>
-
                 </div>
 
             </div>

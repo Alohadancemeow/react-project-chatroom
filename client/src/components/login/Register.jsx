@@ -110,7 +110,29 @@ export const Register = (props) => {
         });
     };
 
+    // # Render snackbar alert
+    const renderAlert = () => {
 
+        return user.errMessage
+            ? (
+                <Alert
+                    onClose={handleClose}
+                    severity="error"
+                >
+                    {user.errMessage}
+
+                </Alert>
+            )
+            : (
+                <Alert
+                    onClose={handleClose}
+                    severity="success"
+                >
+                    {user.successMessage}
+
+                </Alert>
+            )
+    }
 
     return (
         <div className="base-container" ref={containerRef}>
@@ -176,25 +198,7 @@ export const Register = (props) => {
                 onClose={handleClose}
             >
                 {
-                    user.errMessage
-                        ? (
-                            <Alert
-                                onClose={handleClose}
-                                severity="error"
-                            >
-                                {user.errMessage}
-
-                            </Alert>
-                        )
-                        : (
-                            <Alert
-                                onClose={handleClose}
-                                severity="success"
-                            >
-                                {user.successMessage}
-
-                            </Alert>
-                        )
+                    renderAlert()
                 }
 
             </Snackbar>

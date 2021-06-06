@@ -8,7 +8,7 @@ const ChatItem = (props) => {
 
     return (
         <div key={index} class="chat-messages" id="chat-messsage">
-            <div  className="message">
+            <div className="message">
                 <p className="meta">
                     {username}
                     <span>{time}</span>

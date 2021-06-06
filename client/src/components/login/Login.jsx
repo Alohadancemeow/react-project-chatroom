@@ -109,6 +109,29 @@ export const Login = (props) => {
         });
     };
 
+    // # Render snackbar alert
+    const renderAlert = () => {
+        
+        return user.errMessage
+            ? (
+                <Alert
+                    onClose={handleClose}
+                    severity="error"
+                >
+                    {user.errMessage}
+
+                </Alert>
+            )
+            : (
+                <Alert
+                    onClose={handleClose}
+                    severity="success"
+                >
+                    {user.successMessage}
+
+                </Alert>
+            )
+    }
 
 
     return (
@@ -165,25 +188,7 @@ export const Login = (props) => {
                 onClose={handleClose}
             >
                 {
-                    user.errMessage
-                        ? (
-                            <Alert
-                                onClose={handleClose}
-                                severity="error"
-                            >
-                                {user.errMessage}
-
-                            </Alert>
-                        )
-                        : (
-                            <Alert
-                                onClose={handleClose}
-                                severity="success"
-                            >
-                                {user.successMessage}
-
-                            </Alert>
-                        )
+                    renderAlert()
                 }
 
             </Snackbar>
