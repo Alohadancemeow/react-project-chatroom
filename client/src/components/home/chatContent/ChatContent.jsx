@@ -11,7 +11,7 @@ const ChatContent = () => {
 
     // # Socket.io v.3 or higher
     const socket = io(
-        'http://localhost:5000',
+        'https://chatroom-app-backend.herokuapp.com/',
         { withCredentials: true }
     )
 

@@ -84,7 +84,6 @@ io.on('connection', (socket) => {
         })
     })
 
-
     // Listen for chatMessage
     socket.on('chatMessage', ({ username, body, type, mimeType, fileName }) => {
         io.emit('chatMessage', (formatTime(username, {body, type, mimeType, fileName})))

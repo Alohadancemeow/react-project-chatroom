@@ -12,7 +12,7 @@ import {
 } from './types'
 
 // # api url
-const API_URL = 'http://localhost:5000/api/users'
+const API_URL = 'https://chatroom-app-backend.herokuapp.com/api/users'
 
 
 // # Check token and load user
