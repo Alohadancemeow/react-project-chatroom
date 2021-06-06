@@ -10,10 +10,7 @@ import ImageItem from './ImageItem';
 const ChatContent = () => {
 
     // # Socket.io v.3 or higher
-    const socket = io(
-        'https://chatroom-app-backend.herokuapp.com/',
-        { withCredentials: true }
-    )
+    const socket = io('https://chatroom-app-backend.herokuapp.com/' )
 
     // # Select authReducer
     const { user } = useSelector(state => state.auth)

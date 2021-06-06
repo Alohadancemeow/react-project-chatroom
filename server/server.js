@@ -15,9 +15,8 @@ app.use(cors())
 const server = http.createServer(app)
 const io = socketio(server, {
     cors: {
-        origin: "http://localhost:3000",
-        methods: ["GET", "POST"],
-        credentials: true
+        origin: "*",
+        methods: ["GET", "POST"]
     }
 })
 
@@ -86,7 +85,7 @@ io.on('connection', (socket) => {
 
     // Listen for chatMessage
     socket.on('chatMessage', ({ username, body, type, mimeType, fileName }) => {
-        io.emit('chatMessage', (formatTime(username, {body, type, mimeType, fileName})))
+        io.emit('chatMessage', (formatTime(username, { body, type, mimeType, fileName })))
     })
 })
 

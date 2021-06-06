@@ -8,10 +8,8 @@ import ReactScrollableFeed from 'react-scrollable-feed'
 const UserProfile = () => {
 
     // # Socket.io v.3 or higher
-    const socket = io(
-        'https://chatroom-app-backend.herokuapp.com/',
-        { withCredentials: true }
-    )
+    const socket = io('https://chatroom-app-backend.herokuapp.com/')
+
 
     const [notifyMessage, setNotifyMessage] = useState([])
 
